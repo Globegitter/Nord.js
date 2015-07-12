@@ -1,0 +1,45 @@
+{
+  "name": "nord",
+  "version": "0.1.0",
+  "description": "Next generation backend framework.",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "npm run build",
+    "prepublish": "npm run build",
+    
+    "build": "babel src --out-dir lib",
+    "build:watch": "babel src --out-dir lib --watch",
+
+    "lint": "node makefile.js lint",
+    "test": "node makefile.js test",
+    "test-all": "node tests/runner all",
+    "autotest": "mocha --watch --reporter spec tests/**/*Test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Globegitter/Nord.js.git"
+  },
+  "keywords": [
+    "API",
+    "backend",
+    "server",
+    "graphql",
+    "REST"
+  ],
+  "author": "Markus Padourek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Globegitter/Nord.js/issues"
+  },
+  "homepage": "https://github.com/Globegitter/Nord.js#readme",
+  "dependencies": {
+    "babel": "^5.6.14",
+    "babel-core": "^5.6.18",
+    "es6-module-loader": "^0.17.3"
+  },
+  "devDependencies": {
+    "babel-eslint": "^3.1.23",
+    "eslint": "^0.24.1",
+    "shelljs": "^0.5.1"
+  }
+}
