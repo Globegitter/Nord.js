@@ -41,17 +41,21 @@ export default class NordServer {
   }
 
   transformAppCode() {
-    // globSync('app/**/*.js')
+    let appFiles = globSync('app/**/*.js');
+    for (let file of appFiles) {
+      console.log(file);
+    }
   }
 
   transformFile(filename) {
+    console.log('filename', filename);
     let {code} = babel.transformFileSync(filename, {
       'stage'   : 0,
       'loose'   : true,
       'optional': ['runtime'],
       'modules' : 'common'
     });
-    this.copyToTmp(filename, code);
+    return code;
   }
 
   copyToTmp(filename, code) {
