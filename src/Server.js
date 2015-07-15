@@ -1,6 +1,10 @@
 import {System} from 'es6-module-loader';
+
 import http from 'http';
+import fs from 'fs';
+
 import babel from 'babel';
+import {sync as globSync} from 'glob';
 
 System.transpiler = 'babel';
 
@@ -36,18 +40,23 @@ export default class NordServer {
     return res.end();
   }
 
-  transformAppCode(filename) {
+  transformAppCode() {
+    // globSync('app/**/*.js')
+  }
+
+  transformFile(filename) {
     let {code} = babel.transformFileSync(filename, {
       'stage'   : 0,
       'loose'   : true,
-      'optional': 'runtime',
+      'optional': ['runtime'],
       'modules' : 'common'
     });
-    this.copyToTmp(code);
+    this.copyToTmp(filename, code);
   }
 
-  copyToTmp(code) {
-    console.log(code)
+  copyToTmp(filename, code) {
+    // console.log(code)
+    fs.writeFileSync(`.app/${filename}`, code);
   }
 
   start() {
