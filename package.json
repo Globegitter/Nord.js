@@ -4,15 +4,16 @@
   "description": "Next generation backend framework.",
   "main": "index.js",
   "scripts": {
-    "pretest": "npm run build",
-    "preautotest": "npm run build",
-    "prepublish": "npm run build",
     "build": "babel src --out-dir lib",
     "build:watch": "babel src --out-dir lib --watch",
-    "lint": "node makefile.js lint",
-    "test": "node makefile.js test",
-    "test-all": "node tests/runner all",
-    "autotest": "babel tests --out-dir .tests && mocha --reporter spec .tests/**/*-test.js"
+    "buildtest": "babel tests --out-dir .tests",
+
+    "lint": "eslint index.js src tests",
+
+    "pretest": "npm run lint && npm run build && npm run buildtest",
+    "test": "mocha --reporter spec .tests/**/*-test.js",
+
+    "prepublish": "npm run build",
   },
   "repository": {
     "type": "git",
@@ -42,7 +43,9 @@
     "babel-eslint": "^3.1.23",
     "chai": "^3.0.0",
     "eslint": "^0.24.1",
+    "fs-extra": "^0.22.1",
     "mocha": "^2.2.5",
-    "shelljs": "^0.5.1"
+    "shelljs": "^0.5.1",
+    "tmp-sync": "^1.0.1"
   }
 }

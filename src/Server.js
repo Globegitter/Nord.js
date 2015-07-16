@@ -1,9 +1,10 @@
 import {System} from 'es6-module-loader';
 
 import http from 'http';
-import fs from 'fs';
+import fs from 'fs-extra';
+import path from 'path';
 
-import babel from 'babel';
+import {transformFileSync} from 'babel';
 import {sync as globSync} from 'glob';
 
 System.transpiler = 'babel';
@@ -40,32 +41,30 @@ export default class NordServer {
     return res.end();
   }
 
-  transformAppCode() {
-    let appFiles = globSync('app/**/*.js');
-    for (let file of appFiles) {
-      console.log(file);
-    }
-  }
-
-  transformFile(filename) {
-    console.log('filename', filename);
-    let {code} = babel.transformFileSync(filename, {
+  transformAppCode(outPath='.app') {
+    let appFiles = globSync(`${this.rootPath}/**/*.js`);
+    let outFiles = [];
+    let babelOptions = {
       'stage'   : 0,
       'loose'   : true,
       'optional': ['runtime'],
       'modules' : 'common'
-    });
-    return code;
-  }
+    };
 
-  copyToTmp(filename, code) {
-    // console.log(code)
-    fs.writeFileSync(`.app/${filename}`, code);
+    for (let filePath of appFiles) {
+      let {code} = transformFileSync(filePath, babelOptions);
+      let filename = path.relative(this.rootPath, filePath);
+      let outFile = path.join(outPath, filename);
+      fs.outputFileSync(outFile, code);
+      outFiles.push(outFile);
+    }
+
+    return outFiles;
   }
 
   start() {
     // Create a server
-    let server = http.createServer(::this.handleRequest);
+    let server = http.createServer(this.handleRequest.bind(this));
 
     // Lets start our server
     server.listen(this.port,  () => {
