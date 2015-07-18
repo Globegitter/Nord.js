@@ -10,10 +10,14 @@
 
     "lint": "eslint index.js src tests",
 
-    "pretest": "npm run lint && npm run build && npm run buildtest",
-    "test": "mocha --reporter spec .tests/**/*-test.js",
-
     "prepublish": "npm run build",
+
+    "pretest": "npm run lint && npm run build && npm run buildtest",
+    "pretest-no-lint": "npm run build && npm run buildtest",
+    "test": "mocha --reporter spec .tests/**/*-test.js",
+    "test-no-lint": "mocha --reporter spec .tests/**/*-test.js",
+    "posttest": "rm -rf lib .tests",
+    "posttest-no-lint": "npm run posttest"
   },
   "repository": {
     "type": "git",
@@ -21,10 +25,10 @@
   },
   "keywords": [
     "API",
+    "REST",
     "backend",
-    "server",
     "graphql",
-    "REST"
+    "server"
   ],
   "author": "Markus Padourek",
   "license": "MIT",
@@ -46,6 +50,8 @@
     "fs-extra": "^0.22.1",
     "mocha": "^2.2.5",
     "shelljs": "^0.5.1",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0",
     "tmp-sync": "^1.0.1"
   }
 }

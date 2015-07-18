@@ -1,5 +1,3 @@
-import {System} from 'es6-module-loader';
-
 import http from 'http';
 import fs from 'fs-extra';
 import path from 'path';
@@ -7,11 +5,9 @@ import path from 'path';
 import {transformFileSync} from 'babel';
 import {sync as globSync} from 'glob';
 
-System.transpiler = 'babel';
-
 export default class NordServer {
 
-  constructor(root='app', port=8080) {
+  constructor(root='.app', port=8080) {
     this.rootPath = root;
     this.port = port;
   }
@@ -25,24 +21,22 @@ export default class NordServer {
    * @returns when the res ends and gets displayed to the user
    */
   async simpleRouter(req, res) {
-    let path = req.url.slice(1);
+    const filePath = path.join(this.rootPath, `${req.url}.js`);
+    const fileMethod = req.method.toLowerCase();
 
     try {
-      let UserResource = await System.import(`./${this.rootPath}/${path}.js`);
-      // console.log(UserResource);
-      let resource = new UserResource.default(req, res); // eslint-disable-line new-cap
-      console.log(resource.get());
+      const UserResource = require(filePath);
+      const resource = new UserResource(req, res);
+      // calls the user function to process the request
+      resource[fileMethod];
     } catch (error) {
-      console.log('error', error);
-      console.log(error.stack);
-      if (error.message.includes('ENOENT')) {
+      if (error.code === 'MODULE_NOT_FOUND') {
         res.statusCode(404);
-        return res.end('404 error!');
+        return res.end(`404 error! ${req.url} could not be found.`);
       } else {
         res.statusCode(500);
         return res.end('Internal error');
       }
-      // return res.end('Whhaaa');
     }
 
     return res.end();
@@ -57,9 +51,9 @@ export default class NordServer {
  * @returns {array} the list of files that have been created
  */
   transformAppCode(outPath='.app') {
-    let appFiles = globSync(`${this.rootPath}/**/*.js`);
-    let outFiles = [];
-    let babelOptions = {
+    const appFiles = globSync(`${this.rootPath}/**/*.js`);
+    const outFiles = [];
+    const babelOptions = {
       'stage'    : 0,
       'blacklist': [
         'react',
@@ -74,10 +68,10 @@ export default class NordServer {
       'modules' : 'common'
     };
 
-    for (let filePath of appFiles) {
-      let {code} = transformFileSync(filePath, babelOptions);
-      let filename = path.relative(this.rootPath, filePath);
-      let outFile = path.join(outPath, filename);
+    for (const filePath of appFiles) {
+      const {code} = transformFileSync(filePath, babelOptions);
+      const filename = path.relative(this.rootPath, filePath);
+      const outFile = path.join(outPath, filename);
       fs.outputFileSync(outFile, code);
       outFiles.push(outFile);
     }
@@ -91,12 +85,12 @@ export default class NordServer {
    */
   start() {
     // Create a server
-    let server = http.createServer(this.simpleRouter.bind(this));
+    const server = http.createServer(this.simpleRouter.bind(this));
 
     // Lets start our server
     server.listen(this.port,  () => {
       // Callback triggered when server is successfully listening. Hurray!
-      console.log(`Server started on: http://localhost:${this.port}`);
+      console.log(`Server started on: http://localhost:${this.port}`); // eslint-disable-line no-console
     });
   }
 }

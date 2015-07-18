@@ -1,4 +1,7 @@
-export default class Response{
+/**
+ * Description of what this does.
+ */
+export default class Response {
   constructor(res) {
     this.res = res;
   }

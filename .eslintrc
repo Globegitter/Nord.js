@@ -1,37 +1,40 @@
 {
   "parser": "babel-eslint",
-  "rules" : {
-    "strict"                           : 0,
-    "no-underscore-dangle"             : 0,
-    "no-multi-spaces"                  : 0,
-    "key-spacing"                      : 0,
-    "no-shadow"                        : 0,
-    "consistent-return"                : 2,
-    "no-use-before-define"             : 2,
-    "new-parens"                       : 2,
-    "no-cond-assign"                   : 2,
-    "space-after-keywords"             : 2,
-    "space-infix-ops"                  : 2,
-    "key-spacing"                      : [2, {"align": "colon"}],
-    "comma-dangle"                     : [2, "never"],
-    "no-multiple-empty-lines"          : [2, {"max": 2}],
-    "quotes"                           : [2, "single"],
-    "eqeqeq"                           : [2, "smart"],
-    "wrap-iife"                        : [2, "inside"],
-    "indent"                           : [2, 2],
-    "brace-style"                      : [2, "1tbs"],
-    "spaced-line-comment"              : [2, "always", {"exceptions":["-","+"]}],
-    "space-before-function-parentheses": [2, {
-                                            "anonymous" : "always",
-                                            "named" : "never"
-                                          }],
-    "no-var"                            : 2,
-    "no-this-before-super"              : 2,
-    "constructor-super"                 : 2,
-    "object-shorthand"                  : 2
+  "rules": {
+    "indent": [
+      2,
+      2
+    ],
+    "quotes": [
+      2,
+      "single"
+    ],
+    "linebreak-style": [
+      2,
+      "unix"
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "no-shadow"               : 0,
+    "no-cond-assign"          : 2,
+    "space-after-keywords"    : 2,
+    "key-spacing"             : [2, {"align": "colon"}],
+    "no-multiple-empty-lines" : [2, {"max": 2}],
+    "wrap-iife"               : [2, "inside"],
+    "brace-style"             : 2,
+    "spaced-comment"          : [2, "always", {"exceptions":["-","+"]}],
+    "space-before-blocks"     : 2,
+    "constructor-super"       : 2,
+    "no-this-before-super"    : 2,
+    "no-var"                  : 2,
+    "object-shorthand"        : 2,
+    "prefer-const"            : 2
   },
   "env": {
-    "node": true,
-    "es6" : true
-  }
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended"
 }
