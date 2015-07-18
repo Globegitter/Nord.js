@@ -20,7 +20,7 @@ export default class NordServer {
    * @param {object} res The Node response object
    * @returns when the res ends and gets displayed to the user
    */
-  async simpleRouter(req, res) {
+  simpleRouter(req, res) {
     const filePath = path.join(this.rootPath, `${req.url}.js`);
     const fileMethod = req.method.toLowerCase();
 
@@ -84,6 +84,11 @@ export default class NordServer {
    * TODO(markus): Implement https support
    */
   start() {
+
+    console.log('Transforming app code into .app/'); // eslint-disable-line no-console
+    this.transformAppCode();
+    console.log('App code transformed.'); // eslint-disable-line no-console
+
     // Create a server
     const server = http.createServer(this.simpleRouter.bind(this));
 
