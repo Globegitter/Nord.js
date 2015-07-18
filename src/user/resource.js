@@ -1,4 +1,4 @@
-import Response from '../http/Response.js';
+import Response from '../http/response';
 
 /**
  * To be
