@@ -7,8 +7,9 @@ import {sync as globSync} from 'glob';
 
 export default class NordServer {
 
-  constructor(root='.app', port=8080) {
-    this.rootPath = root;
+  constructor(root='app', port=8080) {
+    this.userRootPath = root;
+    this.rootPath = `.${root}`;
     this.port = port;
   }
 
@@ -21,14 +22,14 @@ export default class NordServer {
    * @returns when the res ends and gets displayed to the user
    */
   simpleRouter(req, res) {
-    const filePath = path.join(this.rootPath, `${req.url}.js`);
+    const filePath = path.relative(__dirname, path.join(this.rootPath, req.url));
     const fileMethod = req.method.toLowerCase();
 
     try {
       const UserResource = require(filePath);
       const resource = new UserResource(req, res);
       // calls the user function to process the request
-      resource[fileMethod];
+      resource[fileMethod]();
     } catch (error) {
       if (error.code === 'MODULE_NOT_FOUND') {
         res.statusCode(404);
@@ -51,7 +52,8 @@ export default class NordServer {
  * @returns {array} the list of files that have been created
  */
   transformAppCode(outPath='.app') {
-    const appFiles = globSync(`${this.rootPath}/**/*.js`);
+    this.rootPath = outPath;
+    const appFiles = globSync(`${this.userRootPath}/**/*.js`);
     const outFiles = [];
     const babelOptions = {
       'stage'    : 0,
@@ -70,7 +72,7 @@ export default class NordServer {
 
     for (const filePath of appFiles) {
       const {code} = transformFileSync(filePath, babelOptions);
-      const filename = path.relative(this.rootPath, filePath);
+      const filename = path.relative(this.userRootPath, filePath);
       const outFile = path.join(outPath, filename);
       fs.outputFileSync(outFile, code);
       outFiles.push(outFile);
